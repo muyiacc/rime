@@ -1,0 +1,42 @@
+name: Sync rime-ice
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  sync-rime-ice:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout current repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set git config
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "Github Action"
+
+      - name: Add upstream repository
+        run: |
+          git remote add upstream https://github.com/iDvel/rime-ice.git
+
+      - name: Fetch upstream changes
+        run: |
+          git fetch upstream
+
+      - name: Merge upstream changes
+        run: |
+          git checkout main
+          git merge upstream/main --allow-unrelated-histories || {
+            echo "Merge conflicts detected. Checking out 'theirs' version..."
+            git checkout --theirs .
+            git add .
+            git commit -m "Resolved merge conflicts using upstream changes."
+          }
+
+      - name: Push changes to origin
+        run: |
+          git push origin main
