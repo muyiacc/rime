@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  sync-rime-ice:
+  sync-upstream-rime-ice:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -17,6 +17,9 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          # Fine-grained PAT with contents:write and workflows:write
+          # scopes
+          token: ${{ secrets.WORKFLOW_TOKEN }}
 
       - name: Set git config
         run: |
@@ -45,6 +48,6 @@ jobs:
         env:
           # Fine-grained PAT with contents:write and workflows:write
           # scopes
-          GITHUB_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           git push origin main
