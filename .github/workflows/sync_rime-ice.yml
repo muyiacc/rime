@@ -8,6 +8,9 @@ on:
 jobs:
   sync-rime-ice:
     runs-on: ubuntu-latest
+    permissions:
+      actions: write
+  
     steps:
       - name: Checkout current repository
         uses: actions/checkout@v4
