@@ -1,15 +1,16 @@
-name: Sync rime-ice
+name: Sync Upstream rime-ice
 
 on:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "0 0 */2 * *"
   workflow_dispatch:
 
 jobs:
   sync-rime-ice:
     runs-on: ubuntu-latest
     permissions:
-      actions: write
+      contents: write
+      pull-requests: write
   
     steps:
       - name: Checkout current repository
@@ -41,5 +42,9 @@ jobs:
           }
 
       - name: Push changes to origin
+        env:
+          # Fine-grained PAT with contents:write and workflows:write
+          # scopes
+          GITHUB_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
         run: |
           git push origin main
